@@ -1,0 +1,6 @@
+[submodule "submodule/libcore.cpp"]
+	path = submodule/libcore.cpp
+	url = https://github.com/progman/libcore.cpp.git
+[submodule "submodule/libhash"]
+	path = submodule/libhash
+	url = https://github.com/progman/libhash.git
