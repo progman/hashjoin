@@ -1,0 +1,7 @@
+Hash join of two text files
+
+
+1) Get this : git clone https://github.com/progman/hashjoin.git
+2) Make this: git submodule update --init && make x64 && ./test.sh
+3) Use this : hashjoin == TEXT_FILE1 TEXT_FILE2
+4) Enjoy!
