@@ -259,6 +259,12 @@ int main(int argc, char *argv[])
 			continue;
 		}
 
+		if (strcmp(argv[i], "!=") == 0)
+		{
+			flag_equal = false;
+			continue;
+		}
+
 		if (pfilename1 == NULL)
 		{
 			pfilename1 = argv[i];
