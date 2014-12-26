@@ -24,7 +24,7 @@ namespace global
 		std::string line;
 		std::string hash;
 
-		hash_item_t(std::string line, std::string hash)
+		hash_item_t(const std::string &line, const std::string &hash)
 		{
 			this->line = line;
 			this->hash = hash;
@@ -54,18 +54,22 @@ int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_ite
 	std::string hash;
 
 
+	const uint8_t *pstart = NULL;
 	bool flag_open = false;
-	for (uint64_t i=0; i < size; i++)
+	for (uint64_t i=0; i < size; i++, p++)
 	{
 		uint8_t ch = *p;
-		p++;
 
 		if (ch == '\n')
 		{
 			if (flag_open == true)
 			{
 				flag_open = false;
+
+				line.append((const char *)pstart, p - pstart);
+				sha1.update(pstart, p - pstart);
 				sha1.close();
+
 				hash2string(&sha1_item, sizeof(sha1_item), hash);
 				hash_list.push_back(global::hash_item_t(line, hash));
 			}
@@ -74,15 +78,13 @@ int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_ite
 
 		if (flag_open == false)
 		{
+			pstart = p;
 			line.clear();
 			hash.clear();
 
 			sha1.open(&sha1_item);
 			flag_open = true;
 		}
-
-		line.append(1, ch);
-		sha1.update(&ch, sizeof(ch));
 	}
 
 
