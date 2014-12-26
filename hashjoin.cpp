@@ -48,14 +48,14 @@ void hash2string(const void * const p, size_t size, std::string &str)
 // search line and create hash
 int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_item_t> &hash_list)
 {
-	sha1_t  sha1;
+	sha1_t sha1;
 	sha1_t::sha1_item_t sha1_item;
 	std::string line;
 	std::string hash;
-
-
 	const uint8_t *pstart = NULL;
 	bool flag_open = false;
+
+
 	for (uint64_t i=0; i < size; i++, p++)
 	{
 		uint8_t ch = *p;
@@ -69,7 +69,6 @@ int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_ite
 				line.append((const char *)pstart, p - pstart);
 				sha1.update(pstart, p - pstart);
 				sha1.close();
-
 				hash2string(&sha1_item, sizeof(sha1_item), hash);
 				hash_list.push_back(global::hash_item_t(line, hash));
 			}
@@ -81,10 +80,19 @@ int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_ite
 			pstart = p;
 			line.clear();
 			hash.clear();
-
 			sha1.open(&sha1_item);
 			flag_open = true;
 		}
+	}
+
+
+	if (flag_open == true)
+	{
+		line.append((const char *)pstart, p - pstart);
+		sha1.update(pstart, p - pstart);
+		sha1.close();
+		hash2string(&sha1_item, sizeof(sha1_item), hash);
+		hash_list.push_back(global::hash_item_t(line, hash));
 	}
 
 
