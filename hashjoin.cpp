@@ -160,46 +160,91 @@ int file2hash_list(const char *pfilename, std::list<global::hash_item_t> &hash_l
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // open sql stat
-int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal)
+int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal, bool flag_diff)
 {
 	int rc;
 
 
-	std::list<global::hash_item_t> hash_list1;
-	std::set<std::string> hash_set2;
-
-
+	if (flag_diff == false)
 	{
-		std::list<global::hash_item_t> hash_list2; // tmp hash list
-		rc = file2hash_list(pfilename2, hash_list2);
+		std::list<global::hash_item_t> hash_list1;
+		std::set<std::string> hash_set2;
+
+
+		{
+			std::list<global::hash_item_t> hash_list2; // tmp hash list
+			rc = file2hash_list(pfilename2, hash_list2);
+			if (rc == -1) return 1;
+
+			for (std::list<global::hash_item_t>::const_iterator i=hash_list2.begin(); i != hash_list2.end(); ++i)
+			{
+				hash_set2.insert((*i).hash);
+			}
+		}
+
+
+		rc = file2hash_list(pfilename1, hash_list1);
 		if (rc == -1) return 1;
 
-		for (std::list<global::hash_item_t>::iterator i=hash_list2.begin(); i != hash_list2.end(); ++i)
+
+		for (std::list<global::hash_item_t>::const_iterator i=hash_list1.begin(); i != hash_list1.end(); ++i)
 		{
-			hash_set2.insert((*i).hash);
+			if (hash_set2.find((*i).hash) != hash_set2.end())
+			{
+				if (flag_equal != false)
+				{
+					printf("%s\n", (*i).line.c_str());
+				}
+			}
+			else
+			{
+				if (flag_equal == false)
+				{
+					printf("%s\n", (*i).line.c_str());
+				}
+			}
 		}
+
+		return 0;
 	}
+
+
+	std::list<global::hash_item_t> hash_list1;
+	std::list<global::hash_item_t> hash_list2;
+	std::set<std::string> hash_set1;
+	std::set<std::string> hash_set2;
 
 
 	rc = file2hash_list(pfilename1, hash_list1);
 	if (rc == -1) return 1;
-
-
-	for (std::list<global::hash_item_t>::iterator i=hash_list1.begin(); i != hash_list1.end(); ++i)
+	for (std::list<global::hash_item_t>::const_iterator i=hash_list1.begin(); i != hash_list1.end(); ++i)
 	{
-		if (hash_set2.find((*i).hash) != hash_set2.end())
+		hash_set1.insert((*i).hash);
+	}
+
+
+	rc = file2hash_list(pfilename2, hash_list2);
+	if (rc == -1) return 1;
+	for (std::list<global::hash_item_t>::const_iterator i=hash_list2.begin(); i != hash_list2.end(); ++i)
+	{
+		hash_set2.insert((*i).hash);
+	}
+
+
+	for (std::list<global::hash_item_t>::const_iterator i=hash_list1.begin(); i != hash_list1.end(); ++i)
+	{
+		if (hash_set2.find((*i).hash) == hash_set2.end())
 		{
-			if (flag_equal != false)
-			{
-				printf("%s\n", (*i).line.c_str());
-			}
+				printf(">%s\n", (*i).line.c_str());
 		}
-		else
+	}
+
+
+	for (std::list<global::hash_item_t>::const_iterator i=hash_list2.begin(); i != hash_list2.end(); ++i)
+	{
+		if (hash_set1.find((*i).hash) == hash_set1.end())
 		{
-			if (flag_equal == false)
-			{
-				printf("%s\n", (*i).line.c_str());
-			}
+				printf("<%s\n", (*i).line.c_str());
 		}
 	}
 
@@ -211,7 +256,7 @@ int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal)
 void help()
 {
 	printf("%s    %s\n", PROG_FULL_NAME, PROG_URL);
-	printf("example: %s [==|=!] TEXT_FILE1 TEXT_FILE2\n", PROG_NAME);
+	printf("example: %s [==|=!|diff] TEXT_FILE1 TEXT_FILE2\n", PROG_NAME);
 	printf("\n");
 
 	printf("hash join of two text files\n");
@@ -220,6 +265,7 @@ void help()
 	printf("  -h, -help, --help    this message\n");
 	printf("  ==                 line from TEXT_FILE1 exist in TEXT_FILE2\n");
 	printf("  =!                 line from TEXT_FILE1 not exist in TEXT_FILE2\n");
+	printf("  diff               show TEXT_FILE1 =! TEXT_FILE2 and TEXT_FILE2 != TEXT_FILE1\n");
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // general function
@@ -229,6 +275,7 @@ int main(int argc, char *argv[])
 	const char *pfilename1 = NULL;
 	const char *pfilename2 = NULL;
 	bool flag_equal = true;
+	bool flag_diff  = false;
 
 
 	if (argc != 4)
@@ -265,6 +312,12 @@ int main(int argc, char *argv[])
 			continue;
 		}
 
+		if (strcmp(argv[i], "diff") == 0)
+		{
+			flag_diff = true;
+			continue;
+		}
+
 		if (pfilename1 == NULL)
 		{
 			pfilename1 = argv[i];
@@ -283,7 +336,7 @@ int main(int argc, char *argv[])
 	}
 
 
-	rc = do_it(pfilename1, pfilename2, flag_equal);
+	rc = do_it(pfilename1, pfilename2, flag_equal, flag_diff);
 	if (rc == -1) return 1;
 	fflush(stdout);
 
