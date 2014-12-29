@@ -32,6 +32,144 @@ function run_app()
 	return "${RESULT}";
 }
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+function test1()
+{
+	echo "1" >  "${1}";
+	echo "2" >> "${1}";
+	echo "3" >> "${1}";
+	echo "4" >> "${1}";
+
+
+	echo "5" >  "${2}";
+	echo "2" >> "${2}";
+	echo "3" >> "${2}";
+	echo "8" >> "${2}";
+
+
+	run_app '==' "${1}" "${2}" &> "${3}";
+	if [ "${?}" != "0" ];
+	then
+		echo "ERROR[test1()]: error in app";
+		rm -rf "${TMP1}" &> /dev/null;
+		rm -rf "${TMP2}" &> /dev/null;
+		rm -rf "${TMP3}" &> /dev/null;
+		rm -rf "${TMP4}" &> /dev/null;
+		exit 1;
+	fi
+
+
+	echo "2" >  "${4}";
+	echo "3" >> "${4}";
+
+
+	HASH1=$(sha1sum "${3}" | { read a b; echo ${a}; });
+	HASH2=$(sha1sum "${4}" | { read a b; echo ${a}; });
+
+
+	if [ "${HASH1}" != "${HASH2}" ];
+	then
+		echo "ERROR[test1()]: result different";
+		rm -rf "${TMP1}" &> /dev/null;
+		rm -rf "${TMP2}" &> /dev/null;
+		rm -rf "${TMP3}" &> /dev/null;
+		rm -rf "${TMP4}" &> /dev/null;
+		exit 1;
+	fi
+
+}
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+function test2()
+{
+	echo "1" >  "${1}";
+	echo "2" >> "${1}";
+	echo "3" >> "${1}";
+	echo "4" >> "${1}";
+
+
+	echo "5" >  "${2}";
+	echo "2" >> "${2}";
+	echo "3" >> "${2}";
+	echo "8" >> "${2}";
+
+
+	run_app '!=' "${1}" "${2}" &> "${3}";
+	if [ "${?}" != "0" ];
+	then
+		echo "ERROR[test2()]: error in app";
+		rm -rf "${TMP1}" &> /dev/null;
+		rm -rf "${TMP2}" &> /dev/null;
+		rm -rf "${TMP3}" &> /dev/null;
+		rm -rf "${TMP4}" &> /dev/null;
+		exit 1;
+	fi
+
+
+	echo "1" >  "${TMP4}";
+	echo "4" >> "${TMP4}";
+
+
+	HASH1=$(sha1sum "${3}" | { read a b; echo ${a}; });
+	HASH2=$(sha1sum "${4}" | { read a b; echo ${a}; });
+
+
+	if [ "${HASH1}" != "${HASH2}" ];
+	then
+		echo "ERROR[test2()]: result different";
+		rm -rf "${TMP1}" &> /dev/null;
+		rm -rf "${TMP2}" &> /dev/null;
+		rm -rf "${TMP3}" &> /dev/null;
+		rm -rf "${TMP4}" &> /dev/null;
+		exit 1;
+	fi
+
+}
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+function test3()
+{
+	echo "1" >  "${1}";
+	echo "2" >> "${1}";
+	echo "3" >> "${1}";
+	echo -n "4" >> "${1}";
+
+
+	echo "5" >  "${2}";
+	echo "2" >> "${2}";
+	echo "3" >> "${2}";
+	echo -n "8" >> "${2}";
+
+
+	run_app '!=' "${1}" "${2}" &> "${3}";
+	if [ "${?}" != "0" ];
+	then
+		echo "ERROR[test3()]: error in app";
+		rm -rf "${TMP1}" &> /dev/null;
+		rm -rf "${TMP2}" &> /dev/null;
+		rm -rf "${TMP3}" &> /dev/null;
+		rm -rf "${TMP4}" &> /dev/null;
+		exit 1;
+	fi
+
+
+	echo "1" >  "${TMP4}";
+	echo "4" >> "${TMP4}";
+
+
+	HASH1=$(sha1sum "${3}" | { read a b; echo ${a}; });
+	HASH2=$(sha1sum "${4}" | { read a b; echo ${a}; });
+
+
+	if [ "${HASH1}" != "${HASH2}" ];
+	then
+		echo "ERROR[test3()]: result different";
+		rm -rf "${TMP1}" &> /dev/null;
+		rm -rf "${TMP2}" &> /dev/null;
+		rm -rf "${TMP3}" &> /dev/null;
+		rm -rf "${TMP4}" &> /dev/null;
+		exit 1;
+	fi
+
+}
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # test
 function test_it()
 {
@@ -80,62 +218,13 @@ function test_it()
 	fi
 
 
-	echo "1" >  "${TMP1}";
-	echo "2" >> "${TMP1}";
-	echo "3" >> "${TMP1}";
-	echo "4" >> "${TMP1}";
+	test1 "${TMP1}" "${TMP2}" "${TMP3}" "${TMP4}"
 
 
-	echo "5" >  "${TMP2}";
-	echo "2" >> "${TMP2}";
-	echo "3" >> "${TMP2}";
-	echo "8" >> "${TMP2}";
+	test2 "${TMP1}" "${TMP2}" "${TMP3}" "${TMP4}"
 
 
-	run_app '==' "${TMP1}" "${TMP2}" &> "${TMP3}";
-	if [ "${?}" != "0" ];
-	then
-		echo "ERROR in app";
-		exit 1;
-	fi
-
-
-	echo "2" >  "${TMP4}";
-	echo "3" >> "${TMP4}";
-
-
-	HASH1=$(sha1sum "${TMP3}" | { read a b; echo ${a}; });
-	HASH2=$(sha1sum "${TMP4}" | { read a b; echo ${a}; });
-
-
-	if [ "${HASH1}" != "${HASH2}" ];
-	then
-		echo "ERROR: result different";
-		exit 1;
-	fi
-
-
-	run_app '=!' "${TMP1}" "${TMP2}" &> "${TMP3}";
-	if [ "${?}" != "0" ];
-	then
-		echo "ERROR in app";
-		exit 1;
-	fi
-
-
-	echo "1" >  "${TMP4}";
-	echo "4" >> "${TMP4}";
-
-
-	HASH1=$(sha1sum "${TMP3}" | { read a b; echo ${a}; });
-	HASH2=$(sha1sum "${TMP4}" | { read a b; echo ${a}; });
-
-
-	if [ "${HASH1}" != "${HASH2}" ];
-	then
-		echo "ERROR: result different";
-		exit 1;
-	fi
+	test3 "${TMP1}" "${TMP2}" "${TMP3}" "${TMP4}"
 
 
 	rm -rf "${TMP1}" &> /dev/null;
