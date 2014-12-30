@@ -253,16 +253,16 @@ int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal, bool 
 void help()
 {
 	printf("%s    %s\n", PROG_FULL_NAME, PROG_URL);
-	printf("example: %s [==|=!|diff] TEXT_FILE1 TEXT_FILE2\n", PROG_NAME);
+	printf("example: %s [ == | != | diff ] TEXT_FILE1 TEXT_FILE2\n", PROG_NAME);
 	printf("\n");
 
 	printf("hash join of two text files\n");
 	printf("\n");
 
-	printf("  -h, -help, --help    this message\n");
-	printf("  ==                 line from TEXT_FILE1 exist in TEXT_FILE2\n");
-	printf("  =!                 line from TEXT_FILE1 not exist in TEXT_FILE2\n");
-	printf("  diff               show TEXT_FILE1 =! TEXT_FILE2 and TEXT_FILE2 != TEXT_FILE1\n");
+	printf("  -h, -help, --help this message\n");
+	printf("  ==                line from TEXT_FILE1 exist in TEXT_FILE2\n");
+	printf("  !=                line from TEXT_FILE1 not exist in TEXT_FILE2\n");
+	printf("  diff              show TEXT_FILE1 != TEXT_FILE2 and TEXT_FILE2 != TEXT_FILE1\n");
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // general function
@@ -297,13 +297,13 @@ int main(int argc, char *argv[])
 			continue;
 		}
 
-		if (strcmp(argv[i], "=!") == 0)
+		if (strcmp(argv[i], "!=") == 0)
 		{
 			flag_equal = false;
 			continue;
 		}
 
-		if (strcmp(argv[i], "!=") == 0)
+		if (strcmp(argv[i], "=!") == 0)
 		{
 			flag_equal = false;
 			continue;
