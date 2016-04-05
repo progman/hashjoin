@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// 0.0.1
+// 0.0.2
 // Alexey Potehin <gnuplanet@gmail.com>, http://www.gnuplanet.ru/doc/cv
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 #include <fcntl.h>
@@ -232,7 +232,7 @@ int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal, bool 
 	{
 		if (hash_set2.find((*i).hash) == hash_set2.end())
 		{
-				printf(">%s\n", (*i).line.c_str());
+				printf("-%s\n", (*i).line.c_str());
 		}
 	}
 
@@ -241,7 +241,7 @@ int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal, bool 
 	{
 		if (hash_set1.find((*i).hash) == hash_set1.end())
 		{
-				printf("<%s\n", (*i).line.c_str());
+				printf("+%s\n", (*i).line.c_str());
 		}
 	}
 

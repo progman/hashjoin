@@ -1,15 +1,15 @@
 ## What is it?
 Hash join of two text files
 
-## How to get it?
+## How do get it?
 
 	git clone https://github.com/progman/hashjoin.git
 
-## How to make it?
+## How do make it?
 
 	git submodule update --init && make x64 && ./test.sh
 
-## How to use it?
+## How do use it?
 
 	$ cat TEXT_FILE1
 	1
@@ -38,13 +38,13 @@ Hash join of two text files
 	6
 
 	$ hashjoin diff TEXT_FILE1 TEXT_FILE2
-	>1
-	>3
-	<5
-	<6
+	-1
+	-3
+	+5
+	+6
 
 	$ hashjoin diff TEXT_FILE2 TEXT_FILE1
-	>5
-	>6
-	<1
-	<3
+	-5
+	-6
+	+1
+	+3
