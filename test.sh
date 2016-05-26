@@ -1,6 +1,6 @@
 #!/bin/bash
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# 0.0.1
+# 0.0.2
 # Alexey Potehin <gnuplanet@gmail.com>, http://www.gnuplanet.ru/doc/cv
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 APP='./bin/hashjoin';
@@ -73,8 +73,8 @@ function test1()
 	echo "3" >> "${4}";
 
 
-	HASH1=$(sha1sum "${3}" | { read a b; echo ${a}; });
-	HASH2=$(sha1sum "${4}" | { read a b; echo ${a}; });
+	HASH1=$(shasum -a 1 "${3}" | { read a b; echo ${a}; });
+	HASH2=$(shasum -a 1 "${4}" | { read a b; echo ${a}; });
 
 
 	if [ "${HASH1}" != "${HASH2}" ];
@@ -119,8 +119,8 @@ function test2()
 	echo "4" >> "${TMP4}";
 
 
-	HASH1=$(sha1sum "${3}" | { read a b; echo ${a}; });
-	HASH2=$(sha1sum "${4}" | { read a b; echo ${a}; });
+	HASH1=$(shasum -a 1 "${3}" | { read a b; echo ${a}; });
+	HASH2=$(shasum -a 1 "${4}" | { read a b; echo ${a}; });
 
 
 	if [ "${HASH1}" != "${HASH2}" ];
@@ -165,8 +165,8 @@ function test3()
 	echo "4" >> "${TMP4}";
 
 
-	HASH1=$(sha1sum "${3}" | { read a b; echo ${a}; });
-	HASH2=$(sha1sum "${4}" | { read a b; echo ${a}; });
+	HASH1=$(shasum -a 1 "${3}" | { read a b; echo ${a}; });
+	HASH2=$(shasum -a 1 "${4}" | { read a b; echo ${a}; });
 
 
 	if [ "${HASH1}" != "${HASH2}" ];
@@ -269,7 +269,7 @@ function main()
 	fi
 
 
-	check_prog "cat echo rm sha1sum";
+	check_prog "cat echo rm shasum";
 	if [ "${?}" != "0" ];
 	then
 		return 1;
