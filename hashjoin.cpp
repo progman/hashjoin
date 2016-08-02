@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// 0.0.2
+// 0.0.4
 // Alexey Potehin <gnuplanet@gmail.com>, http://www.gnuplanet.ru/doc/cv
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 #include <fcntl.h>
@@ -26,6 +26,9 @@ namespace global
 
 		hash_item_t(const std::string &line, const std::string &hash)
 		{
+			this->line.reserve(line.size());
+			this->hash.reserve(sizeof(sha3_224_t::sha3_224_item_t));
+
 			this->line = line;
 			this->hash = hash;
 		}
@@ -160,29 +163,28 @@ int file2hash_list(const char *pfilename, std::list<global::hash_item_t> &hash_l
 int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal, bool flag_diff)
 {
 	int rc;
+	std::list<global::hash_item_t> hash_list1;
+	std::list<global::hash_item_t> hash_list2;
+	std::set<std::string> hash_set1;
+	std::set<std::string> hash_set2;
 
 
 	if (flag_diff == false)
 	{
-		std::list<global::hash_item_t> hash_list1;
-		std::set<std::string> hash_set2;
-
-
-		{
-			std::list<global::hash_item_t> hash_list2; // tmp hash list
-			rc = file2hash_list(pfilename2, hash_list2);
-			if (rc == -1) return 1;
-
-			for (std::list<global::hash_item_t>::const_iterator i=hash_list2.begin(); i != hash_list2.end(); ++i)
-			{
-				hash_set2.insert((*i).hash);
-			}
-		}
-
-
-		rc = file2hash_list(pfilename1, hash_list1);
+// get hash_set2
+		rc = file2hash_list(pfilename2, hash_list2);
 		if (rc == -1) return 1;
 
+		for (std::list<global::hash_item_t>::const_iterator i=hash_list2.begin(); i != hash_list2.end(); ++i)
+		{
+			hash_set2.insert((*i).hash);
+		}
+		hash_list2.clear();
+
+
+// get hash_list1 and compare with hash_set2
+		rc = file2hash_list(pfilename1, hash_list1);
+		if (rc == -1) return 1;
 
 		for (std::list<global::hash_item_t>::const_iterator i=hash_list1.begin(); i != hash_list1.end(); ++i)
 		{
@@ -202,14 +204,11 @@ int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal, bool 
 			}
 		}
 
+		hash_set2.clear();
+		hash_list1.clear();
+
 		return 0;
 	}
-
-
-	std::list<global::hash_item_t> hash_list1;
-	std::list<global::hash_item_t> hash_list2;
-	std::set<std::string> hash_set1;
-	std::set<std::string> hash_set2;
 
 
 	rc = file2hash_list(pfilename1, hash_list1);
@@ -232,7 +231,7 @@ int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal, bool 
 	{
 		if (hash_set2.find((*i).hash) == hash_set2.end())
 		{
-				printf("-%s\n", (*i).line.c_str());
+			printf("-%s\n", (*i).line.c_str());
 		}
 	}
 
@@ -241,9 +240,15 @@ int do_it(const char *pfilename1, const char *pfilename2, bool flag_equal, bool 
 	{
 		if (hash_set1.find((*i).hash) == hash_set1.end())
 		{
-				printf("+%s\n", (*i).line.c_str());
+			printf("+%s\n", (*i).line.c_str());
 		}
 	}
+
+
+	hash_list1.clear();
+	hash_list2.clear();
+	hash_set1.clear();
+	hash_set2.clear();
 
 
 	return 0;
