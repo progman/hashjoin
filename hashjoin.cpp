@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "sha1.hpp"
+#include "sha3_224.hpp"
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 // global namespace
 namespace global
@@ -35,8 +35,8 @@ namespace global
 // search line and create hash
 int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_item_t> &hash_list)
 {
-	sha1_t sha1;
-	sha1_t::sha1_item_t sha1_item;
+	sha3_224_t sha3_224;
+	sha3_224_t::sha3_224_item_t sha3_224_item;
 	std::string line;
 	std::string hash;
 	const uint8_t *pstart = NULL;
@@ -54,9 +54,9 @@ int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_ite
 				flag_open = false;
 
 				line.append((const char *)pstart, p - pstart);
-				sha1.update(pstart, p - pstart);
-				sha1.close();
-				hash = std::string((const char *)sha1_item, sizeof(sha1_item));
+				sha3_224.update(pstart, p - pstart);
+				sha3_224.close();
+				hash = std::string((const char *)sha3_224_item, sizeof(sha3_224_item));
 				hash_list.push_back(global::hash_item_t(line, hash));
 			}
 			continue;
@@ -67,7 +67,7 @@ int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_ite
 			pstart = p;
 			line.clear();
 			hash.clear();
-			sha1.open(&sha1_item);
+			sha3_224.open(&sha3_224_item);
 			flag_open = true;
 		}
 	}
@@ -76,9 +76,9 @@ int buffer2hash_list(const uint8_t *p, uint64_t size, std::list<global::hash_ite
 	if (flag_open == true)
 	{
 		line.append((const char *)pstart, p - pstart);
-		sha1.update(pstart, p - pstart);
-		sha1.close();
-		hash = std::string((const char *)sha1_item, sizeof(sha1_item));
+		sha3_224.update(pstart, p - pstart);
+		sha3_224.close();
+		hash = std::string((const char *)sha3_224_item, sizeof(sha3_224_item));
 		hash_list.push_back(global::hash_item_t(line, hash));
 	}
 

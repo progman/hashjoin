@@ -4,13 +4,13 @@
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 PROG_URL            := https://github.com/progman/hashjoin.git
 PROG_NAME           := hashjoin
-PROG_VERSION        := 0.0.2
+PROG_VERSION        := 0.0.3
 PROG_TYPE           := exe
 
 OUT_DIR             := bin
-C_LIST              := sha1.c
-CPP_LIST            := submodule/libcore.cpp/libcore.cpp                          submodule/libhash/sha1.cpp hashjoin.cpp
-HEADER_LIST         := submodule/libcore.cpp/libcore.hpp submodule/libhash/sha1.h submodule/libhash/sha1.hpp
+C_LIST              := sha3.c
+CPP_LIST            := submodule/libcore.cpp/libcore.cpp                          submodule/libhash/sha3_224.cpp hashjoin.cpp
+HEADER_LIST         := submodule/libcore.cpp/libcore.hpp submodule/libhash/sha3.h submodule/libhash/sha3_224.hpp
 
 CFLAGS              := -Isubmodule/libhash
 CPPFLAGS            := -Isubmodule/libhash
