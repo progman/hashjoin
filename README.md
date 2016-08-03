@@ -25,18 +25,18 @@ It is uses SHA3-224
 	6
 	2
 
-	$ hashjoin == TEXT_FILE1 TEXT_FILE2
+	$ hashjoin '==' TEXT_FILE1 TEXT_FILE2
 	2
 	2
 
-	$ hashjoin == TEXT_FILE2 TEXT_FILE1
+	$ hashjoin '==' TEXT_FILE2 TEXT_FILE1
 	2
 
-	$ hashjoin != TEXT_FILE1 TEXT_FILE2
+	$ hashjoin '!=' TEXT_FILE1 TEXT_FILE2
 	1
 	3
 
-	$ hashjoin != TEXT_FILE2 TEXT_FILE1
+	$ hashjoin '!=' TEXT_FILE2 TEXT_FILE1
 	5
 	6
 
