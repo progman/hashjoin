@@ -1,15 +1,18 @@
 ## What is it?
 Hash join of two text files
 
-## How do get it?
+## Which is hash used here?
+It is uses SHA3-224
+
+## How is it get?
 
 	git clone https://github.com/progman/hashjoin.git
 
-## How do make it?
+## How is it make?
 
 	git submodule update --init && make x64 && ./test.sh
 
-## How do use it?
+## How is it use?
 
 	$ cat TEXT_FILE1
 	1
